@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>معرض صور محلي</title>
+</head>
+<body>
+
+    <h2>ارفع الصوره </h2>
+    <input type="file" id="imageInput" accept="image/*">
+    <div id="gallery" style="margin-top: 20px;"></div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const gallery = document.getElementById('gallery');
+
+        // 1. تحميل الصور عند فتح الصفحة
+        window.onload = function() {
+            const savedImages = JSON.parse(localStorage.getItem('myImages') || '[]');
+            savedImages.forEach(src => addImageToGallery(src));
+        };
+
+        // 2. عند اختيار صورة
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                addImageToGallery(imageData);
+                saveImage(imageData);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // دالة عرض الصورة
+        function addImageToGallery(src) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.width = '150px';
+            img.style.margin = '5px';
+            gallery.appendChild(img);
+        }
+
+        // دالة حفظ الصورة في ذاكرة المتصفح
+        function saveImage(src) {
+            const savedImages = JSON.parse(localStorage.getItem('myImages') || '[]');
+            savedImages.push(src);
+            localStorage.setItem('myImages', JSON.stringify(savedImages));
+        }
+    </script>
+</body>
+</html>
